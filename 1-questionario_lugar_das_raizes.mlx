@@ -1,0 +1,107 @@
+%% 1- Questionário sobre Projeto de Controlador de Avanço por Lugar das Raízes
+
+
+questão 2
+disp("Questão 2");
+s = -1+1i;
+Gs = 1/(s*(s+1));
+
+angulo_lugar_de_raiz_para_o_polo = rad2deg(angle(Gs)) - 360
+angulo_lugar_de_raiz_para_o_polo_positivo = rad2deg(angle(Gs))
+phi = 180 - rad2deg(angle(Gs))
+
+
+questão 3
+disp("Questão 3");
+s = -1+1i;
+Gs = 2/(s*(s+1)*(s+2));
+
+angulo_lugar_de_raiz_para_o_polo = rad2deg(angle(Gs)) - 360
+angulo_lugar_de_raiz_para_o_polo_positivo = rad2deg(angle(Gs))
+phi = 180 - rad2deg(angle(Gs))
+
+
+questão 4
+disp("Questão 4");
+syms zeta omega_n
+porcentagem_UP = 10;
+tempo_assentamento = 2;
+
+Mp = porcentagem_UP / 100;
+
+eqn_zeta = exp(- (zeta * pi) / sqrt(1 - zeta^2)) == Mp
+sol_zeta = vpasolve(eqn_zeta, zeta, [0, 1]) % Intervalo [0, 1] restringe a valores reais
+
+eqn_freq_natural = 4 / (sol_zeta * omega_n) == tempo_assentamento
+sol_freq_natural = solve(eqn_freq_natural, omega_n)
+
+polo1 = -sol_zeta*sol_freq_natural + (sol_freq_natural * sqrt(1 - (sol_zeta^2)) ) * 1i
+polo2 = -sol_zeta*sol_freq_natural - (sol_freq_natural * sqrt(1 - (sol_zeta^2)) ) * 1i
+
+
+questão 5
+disp("Questão 5");
+syms zeta omega_n
+porcentagem_UP = 15;
+tempo_assentamento = 0.5;
+
+Mp = porcentagem_UP / 100;
+
+eqn_zeta = exp(- (zeta * pi) / sqrt(1 - zeta^2)) == Mp
+sol_zeta = vpasolve(eqn_zeta, zeta, [0, 1]) % Intervalo [0, 1] restringe a valores reais
+
+eqn_freq_natural = 4 / (sol_zeta * omega_n) == tempo_assentamento
+sol_freq_natural = solve(eqn_freq_natural, omega_n)
+
+polo1 = -sol_zeta*sol_freq_natural + (sol_freq_natural * sqrt(1 - (sol_zeta^2)) ) * 1i
+polo2 = -sol_zeta*sol_freq_natural - (sol_freq_natural * sqrt(1 - (sol_zeta^2)) ) * 1i
+
+
+Questão 6
+disp("Questão 6");
+
+syms zeta omega_n x Kc
+
+porcentagem_UP = 5;
+tempo_assentamento = 0.5;
+zero_do_compensador = -4;
+
+Mp = porcentagem_UP / 100;
+
+eqn_zeta = exp(- (zeta * pi) / sqrt(1 - zeta^2)) == Mp
+sol_zeta = vpasolve(eqn_zeta, zeta, [0, 1]) % Intervalo [0, 1] restringe a valores reais
+
+eqn_freq_natural = 4 / (sol_zeta * omega_n) == tempo_assentamento
+sol_freq_natural = solve(eqn_freq_natural, omega_n)
+
+real = -sol_zeta*sol_freq_natural
+imaginario = (sol_freq_natural * sqrt(1 - (sol_zeta^2)) )
+
+polo1 = real + imaginario * 1i
+polo2 = real - imaginario * 1i
+
+
+Gs_polo1 = 16 / (polo1 * (polo1+4));
+
+angulo_lugar_de_raiz_para_o_polo = rad2deg(angle(Gs_polo1)) - 360;
+angulo_lugar_de_raiz_para_o_polo_positivo = rad2deg(angle(Gs_polo1));
+phi = 180 - rad2deg(angle(Gs_polo1));
+
+fprintf('Ângulo lugar de raiz para o polo: %.3f graus\n', angulo_lugar_de_raiz_para_o_polo);
+fprintf('Ângulo lugar de raiz para o polo positivo: %.3f graus\n', angulo_lugar_de_raiz_para_o_polo_positivo);
+fprintf('Phi: %.3f graus\n', phi);
+
+
+% Errado a partir desse ponto, checar com o Robert e com o Professor
+theta_p = 90 - phi; % angulo que o zero faz com o eixo real - phi
+
+eqn_x = x / imaginario == tan(deg2rad(phi));
+sol_x = solve(eqn_x, x)
+polo_do_compensador = real - sol_x
+
+s = polo1;
+Gs = 16 / (s * (s+4));
+Gc = (s - zero_do_compensador) / (s - polo_do_compensador);
+
+eqn_Kc = abs(Kc * Gc * Gs) == 1
+sol_Kc = solve(eqn_Kc, Kc)
