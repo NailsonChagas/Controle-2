@@ -1,0 +1,81 @@
+%questão 1 --> perguntar para o professor depois
+disp("Questão 2")
+syms Kp
+e = 0.05
+eq_Kp_tio = e == 1 / (1 + Kp);
+Kp_tio = solve(eq_Kp_tio, Kp)
+
+syms s
+Gc = 1/((s+2)*(s+4))
+Kp = limit(Gc, s, 0)
+
+beta = Kp_tio/Kp
+
+%questão 2
+disp("Questão 2")
+syms Kv
+e = 0.1
+eq_Kv_tio = e == 1 / Kv;
+Kv_tio = solve(eq_Kv_tio, Kv)
+
+syms s
+Gc = 1/(s * (s+10))
+Kv = limit(s*Gc, s, 0)
+
+beta = Kv_tio/Kv
+
+%questão 3
+disp("Questão 3")
+clc
+clear
+syms Kc
+
+s = -0.99 + 0.99 * 1i
+
+aux = ((s+0.01)/(s + 0.001)) * (2/(s*(s+2)))
+
+eq_Kc = abs(Kc * aux) == 1
+Kc = solve(eq_Kc, Kc)
+double(Kc)
+
+%questão 4
+disp("Questão 4")
+clc
+clear
+
+s = tf("s")
+G = 20 / ((s+1)*(s+4));
+G_mf = feedback(G, 1)
+poles = pole(G_mf)
+
+%% polo = - (zeta * omega_n) +- (omega_n * sqrt(1 - zeta²))
+real_part = real(poles(1))
+imaginary_part = imag(poles(1))
+
+syms zeta omega_n
+eq1 = real_part == - (zeta * omega_n)
+eq2 = imaginary_part == omega_n * sqrt(1 - zeta^2)
+solutions = solve([eq1, eq2], [zeta, omega_n]);
+
+zeta_sol = double(solutions.zeta)
+omega_n_sol = double(solutions.omega_n)
+
+e = 0.05
+
+syms Kp_tio
+eq_Kp_tio = e == 1 / (1 + Kp_tio);
+sol_Kp_tio = solve(eq_Kp_tio, Kp_tio)
+
+syms s
+Gc = 20/((s+1)*(s+4))
+Kp = limit(Gc, s, 0)
+
+beta = double(sol_Kp_tio/Kp)
+
+s = -2.5 + 4.213 * 1i
+Gs = 20 / ((s+1)*(s+4))
+
+angulo_lugar_de_raiz_para_o_polo = rad2deg(angle(Gs)) - 360
+angulo_lugar_de_raiz_para_o_polo_positivo = rad2deg(angle(Gs))
+
+

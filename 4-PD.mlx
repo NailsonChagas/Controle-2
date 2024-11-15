@@ -1,0 +1,46 @@
+% Questionario 4 - PD
+
+%% Questão 2
+disp("Questão 2")
+zeta = 0.707;
+omega_n = 2;
+
+re = -1*zeta*omega_n;
+im = omega_n*sqrt(1 - zeta^2);
+
+s1 = re + im*1i
+s2 = re - im*1i
+
+aux_phi = rad2deg(angle(1 / (s1^2 - 2)))
+phi = 180 - aux_phi
+
+X = im / tan(deg2rad(phi))
+zero_compensador = re - X
+
+Td = 1 / (-zero_compensador)
+
+syms Kp s
+aux = 1 / (s1^2 - 2)
+eq_Kp = abs(Kp * Td*(s1-zero_compensador) * aux) == 1;
+Kp_solution = solve(eq_Kp, Kp);
+Kp_solution_double = double(Kp_solution)
+
+transf_do_controlador = Kp_solution_double * (Td*s+1)
+
+%% Questão 3
+disp("Questão 3")
+s1 = -1 + sqrt(3)*1i
+
+syms zeta omega_n
+eq_re = -1 * zeta * omega_n == real(s1);
+eq_im = omega_n * sqrt(1 - zeta^2) == imag(s1);
+sol = solve([eq_re, eq_im], [zeta, omega_n]);
+
+zeta_ans = sol.zeta
+omega_n_ans = sol.omega_n
+
+aux_phi = rad2deg(angle( 1/(s1*(s1^2 + 2)) ))
+phi = 180 - aux_phi
+
+phi_1_2 = phi/2
+
