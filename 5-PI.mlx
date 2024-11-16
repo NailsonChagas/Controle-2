@@ -1,0 +1,48 @@
+% Questionario 5
+
+% questão 2
+s1 = -1 + sqrt(3)*1i;
+s2 = -1 - sqrt(3)*1i;
+
+s = tf('s');
+G = 1 / (s^2 + 2*s + 1);
+
+figure;
+rlocus(G);
+hold on;
+plot(real(s1), imag(s1), 'ro', 'LineWidth', 2, 'DisplayName', 's1 = -1 + sqrt(3)i');
+plot(real(s2), imag(s2), 'ro', 'LineWidth', 2, 'DisplayName', 's2 = -1 - sqrt(3)i');
+imag_min = min([-2, imag(s1), imag(s2)]); % Limite mínimo do eixo imaginário
+imag_max = max([2, imag(s1), imag(s2)]);  % Limite máximo do eixo imaginário
+axis([real_min real_max imag_min imag_max]);
+legend('show');
+grid on;
+hold off;
+
+s = tf('s');
+G = 1 / (s^2 + 2*s + 1);
+
+
+G_s1 = evalfr(G, s1); % Avalia G(s) em s1
+K_s1 = -1 / G_s1    % Calcula o ganho
+s = tf('s');
+G = K_s1 / (s^2 + 2*s + 1); % Planta original
+
+% Definição do compensador
+zero_do_compensador = -0.05; % Localização do zero do compensador
+G_compensador = (s - zero_do_compensador) / s; % Compensador
+Ti = 1 / -zero_do_compensador; % Constante de tempo do compensador
+G_aux = G_compensador * G;
+G_aux_fb = feedback(G_aux, 1);
+
+polos = pole(G_aux_fb);
+disp('Polos do sistema em malha fechada:');
+disp(polos);
+figure;
+rlocus(G_aux); 
+hold on;
+plot(real(polos), imag(polos), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
+grid on;
+legend('Lugar das Raízes', 'Polos em Malha Fechada');
+hold off;
+
